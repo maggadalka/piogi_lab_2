@@ -87,6 +87,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -154,6 +158,9 @@
     <Resource Include="Icons\Weapon\weapon_club3.png" />
     <Resource Include="Icons\Weapon\weapon_sword1.png" />
     <Resource Include="Icons\Weapon\weapon_sword3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\background.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
