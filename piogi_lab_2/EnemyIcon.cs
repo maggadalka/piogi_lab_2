@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace piogi_lab_2
+{
+    public class EnemyIcon
+    {
+        public string Name { get; set; }       // имя файла с расширением
+        public string ImagePath { get; set; }  // полный путь до файла
+    }
+
+}
