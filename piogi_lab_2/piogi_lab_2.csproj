@@ -126,6 +126,8 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Saves\армия крутых гоблинов.json" />
+    <None Include="Saves\армия скелетонов.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,0 +1,47 @@
+[
+  {
+    "Name": "\u043A\u0440\u0443\u0442\u043E\u0439 \u0433\u043E\u0431\u043B\u0438\u043D",
+    "IconName": "goblin_7.png",
+    "BaseLife": 150,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  },
+  {
+    "Name": "\u043A\u0440\u0443\u0442\u043E\u0439 \u0433\u043E\u0431\u043B\u0438\u043D",
+    "IconName": "goblin_7.png",
+    "BaseLife": 150,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  },
+  {
+    "Name": "\u043A\u0440\u0443\u0442\u043E\u0439 \u0433\u043E\u0431\u043B\u0438\u043D",
+    "IconName": "goblin_7.png",
+    "BaseLife": 150,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  },
+  {
+    "Name": "\u043A\u0440\u0443\u0442\u043E\u0439 \u0433\u043E\u0431\u043B\u0438\u043D",
+    "IconName": "goblin_7.png",
+    "BaseLife": 150,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  },
+  {
+    "Name": "\u043A\u0440\u0443\u0442\u043E\u0439 \u0433\u043E\u0431\u043B\u0438\u043D",
+    "IconName": "goblin_7.png",
+    "BaseLife": 150,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  }
+]
