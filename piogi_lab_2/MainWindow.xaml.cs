@@ -38,6 +38,7 @@ namespace piogi_lab_2
             DeleteBtn.Click += DeleteBtn_Click;
             SaveBtn.Click += SaveBtn_Click;
             LoadBtn.Click += LoadBtn_Click;
+            EditBtn.Click += EditBtn_Click;
             EnemiesListBox.SelectionChanged += EnemiesListBox_SelectionChanged;
         }
 
@@ -158,6 +159,51 @@ namespace piogi_lab_2
                 enemyList.SaveToJson(dlg.FileName);
                 MessageBox.Show("Сохранено!");
             }
+        }
+
+        // редактирование противника из списка
+        private void EditBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // Проверяем, выбран ли противник
+            if (EnemiesListBox.SelectedItem == null)
+            {
+                MessageBox.Show("Выберите противника из списка!");
+                return;
+            }
+
+            // Запоминаем старое имя (по нему найдём противника)
+            string oldName = EnemiesListBox.SelectedItem.ToString();
+
+            // Проверяем поля
+            if (string.IsNullOrWhiteSpace(NameBox.Text))
+            {
+                MessageBox.Show("Введите имя противника!");
+                return;
+            }
+
+            if (this.Tag == null)
+            {
+                MessageBox.Show("Выберите иконку!");
+                return;
+            }
+
+            if (!int.TryParse(BaseLifeBox.Text, out int baseLife) ||
+                !double.TryParse(LifeModBox.Text, out double lifeMod) ||
+                !int.TryParse(BaseGoldBox.Text, out int baseGold) ||
+                !double.TryParse(GoldModBox.Text, out double goldMod) ||
+                !double.TryParse(SpawnChanceBox.Text, out double spawnChance))
+            {
+                MessageBox.Show("Проверьте числовые поля!");
+                return;
+            }
+
+            // Обновляем противника
+            enemyList.UpdateEnemy(oldName, NameBox.Text, this.Tag.ToString(),
+                                  baseLife, lifeMod, baseGold, goldMod, spawnChance);
+
+            // Обновляем список на экране
+            RefreshEnemiesList();
+            MessageBox.Show("Противник обновлён!");
         }
 
         // загрузка из JSON

@@ -66,6 +66,22 @@ namespace piogi_lab_2
             string json = File.ReadAllText(path);
             enemies = JsonSerializer.Deserialize<List<CEnemyTemplate>>(json) ?? new List<CEnemyTemplate>();
         }
+
+        public void UpdateEnemy(string oldName, string newName, string iconName,
+                        int baseLife, double lifeModifier,
+                        int baseGold, double goldModifier, double spawnChance)
+        {
+            // Находим старого противника по имени
+            var oldEnemy = GetEnemyByName(oldName);
+            if (oldEnemy == null) return;
+
+            // Удаляем его из списка
+            enemies.Remove(oldEnemy);
+
+            // Добавляем нового с обновлёнными данными
+            enemies.Add(new CEnemyTemplate(newName, iconName, baseLife, lifeModifier,
+                                            baseGold, goldModifier, spawnChance));
+        }
     }
 
 }
