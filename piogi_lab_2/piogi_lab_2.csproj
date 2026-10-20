@@ -102,6 +102,7 @@
     <Compile Include="CEnemyTemplate.cs" />
     <Compile Include="CEnemyTemplateList.cs" />
     <Compile Include="BigNumber.cs" />
+    <Compile Include="Enemy.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="EnemyIcon.cs" />
     <Compile Include="MainWindow.xaml.cs">
