@@ -101,6 +101,7 @@
     </Compile>
     <Compile Include="CEnemyTemplate.cs" />
     <Compile Include="CEnemyTemplateList.cs" />
+    <Compile Include="BigNumber.cs" />
     <Compile Include="EnemyIcon.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
