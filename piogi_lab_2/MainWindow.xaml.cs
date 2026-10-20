@@ -36,6 +36,8 @@ namespace piogi_lab_2
             LoadIconsBtn.Click += LoadIconsBtn_Click;
             IconsListBox.SelectionChanged += IconsListBox_SelectionChanged;
 
+            LoadIconsFromFolder(".\\Icons");
+
             AddBtn.Click += AddBtn_Click;
             DeleteBtn.Click += DeleteBtn_Click;
             SaveBtn.Click += SaveBtn_Click;

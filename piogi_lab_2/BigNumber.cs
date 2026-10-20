@@ -1,70 +1,126 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace piogi_lab_2
 {
     public class BigNumber
     {
-
         private const int Base = 1000;
 
+        // Разряды по основанию 1000, младший разряд — digits[0]
         private int[] digits;
 
+        // Сколько разрядов реально используется
         private int length;
+
+        // Знак числа (у нуля всегда false)
+        private bool isNegative;
 
         private BigNumber(int size)
         {
-            digits = new int[size];
+            digits = new int[Math.Max(size, 1)];
             length = 0;
+            isNegative = false;
         }
 
         // Конструктор из обычного числа
         public BigNumber(long value)
         {
-            if (value == 0)
+            isNegative = value < 0;
+
+            // Модуль считаем через ulong, иначе -long.MinValue переполнится
+            ulong abs = isNegative ? (ulong)(-(value + 1)) + 1UL : (ulong)value;
+
+            if (abs == 0)
             {
                 digits = new int[1];
                 length = 1;
+                isNegative = false;
                 return;
             }
 
-            int temp = (int)value;
             int size = 0;
-            while (temp > 0)
+            for (ulong t = abs; t > 0; t /= Base)
             {
                 size++;
-                temp /= Base;
             }
 
             digits = new int[size];
             length = 0;
 
-            while (value > 0)
+            while (abs > 0)
             {
-                digits[length] = (int)(value % Base);
+                digits[length] = (int)(abs % Base);
                 length++;
-                value /= Base;
+                abs /= Base;
             }
+        }
+
+        private bool IsZero => length == 1 && digits[0] == 0;
+
+        // Убирает ведущие нули и не даёт появиться "-0"
+        private void Normalize()
+        {
+            while (length > 1 && digits[length - 1] == 0)
+            {
+                length--;
+            }
+
+            if (length == 0)
+            {
+                digits[0] = 0;
+                length = 1;
+            }
+
+            if (IsZero)
+            {
+                isNegative = false;
+            }
+        }
+
+        private BigNumber Clone()
+        {
+            BigNumber copy = new BigNumber(length);
+            Array.Copy(digits, copy.digits, length);
+            copy.length = length;
+            copy.isNegative = isNegative;
+            return copy;
         }
 
         public override string ToString()
         {
-            if (length == 0) return "0";
+            StringBuilder result = new StringBuilder();
 
-            string result = digits[length - 1].ToString();
+            if (isNegative) result.Append('-');
+
+            result.Append(digits[length - 1]);
 
             for (int i = length - 2; i >= 0; i--)
             {
-                result += digits[i].ToString("D3");
+                result.Append(digits[i].ToString("D3"));
             }
-            return result;
+
+            return result.ToString();
         }
 
-        // Вспомогательный метод для сложения
-        private static BigNumber Add(BigNumber a, BigNumber b)
+
+        // Сравнение модулей: 1, если |a| > |b|; -1, если |a| < |b|; 0, если равны
+        private static int CompareAbs(BigNumber a, BigNumber b)
+        {
+            if (a.length > b.length) return 1;
+            if (a.length < b.length) return -1;
+
+            for (int i = a.length - 1; i >= 0; i--)
+            {
+                if (a.digits[i] > b.digits[i]) return 1;
+                if (a.digits[i] < b.digits[i]) return -1;
+            }
+
+            return 0;
+        }
+
+        // |a| + |b|
+        private static BigNumber AddAbs(BigNumber a, BigNumber b)
         {
             int maxLength = Math.Max(a.length, b.length);
             BigNumber result = new BigNumber(maxLength + 1);
@@ -84,31 +140,24 @@ namespace piogi_lab_2
             }
 
             result.length = i;
+            result.Normalize();
             return result;
         }
 
-        public static BigNumber operator +(BigNumber a, BigNumber b)
+        // |a| - |b|, только при |a| >= |b|
+        private static BigNumber SubtractAbs(BigNumber a, BigNumber b)
         {
-            return Add(a, b);
-        }
+            BigNumber result = new BigNumber(a.length);
+            int borrow = 0;
 
-        // Вспомогательный метод для вычитания
-        private static BigNumber Subtract(BigNumber a, BigNumber b)
-        {
-            BigNumber result = new BigNumber(0);
-            result.digits = new int[a.length];
-
-            int borrow = 0; // Заем
-            int i = 0;
-
-            while (i < a.length)
+            for (int i = 0; i < a.length; i++)
             {
                 int diff = a.digits[i] - borrow;
                 if (i < b.length) diff -= b.digits[i];
 
                 if (diff < 0)
                 {
-                    diff += Base; // Занимаем 1000 у старшего разряда
+                    diff += Base;
                     borrow = 1;
                 }
                 else
@@ -117,45 +166,102 @@ namespace piogi_lab_2
                 }
 
                 result.digits[i] = diff;
-                i++;
             }
 
-            // Обрезаем лишние нули
-            result.length = i;
-            while (result.length > 1 && result.digits[result.length - 1] == 0)
-            {
-                result.length--;
-            }
-
+            result.length = a.length;
+            result.Normalize();
             return result;
         }
 
+
+        private static BigNumber Add(BigNumber a, BigNumber b)
+        {
+            BigNumber result;
+
+            if (a.isNegative == b.isNegative)
+            {
+                // Знаки одинаковые: складываем модули, знак общий
+                result = AddAbs(a, b);
+                result.isNegative = a.isNegative;
+            }
+            else
+            {
+                // Знаки разные: из большего модуля вычитаем меньший,
+                // знак берём у числа с большим модулем
+                int cmp = CompareAbs(a, b);
+
+                if (cmp == 0) return new BigNumber(0);
+
+                if (cmp > 0)
+                {
+                    result = SubtractAbs(a, b);
+                    result.isNegative = a.isNegative;
+                }
+                else
+                {
+                    result = SubtractAbs(b, a);
+                    result.isNegative = b.isNegative;
+                }
+            }
+
+            result.Normalize();
+            return result;
+        }
+
+        private static BigNumber Subtract(BigNumber a, BigNumber b)
+        {
+            // a - b = a + (-b)
+            return Add(a, -b);
+        }
+
+        public static BigNumber operator +(BigNumber a, BigNumber b)
+        {
+            return Add(a, b);
+        }
 
         public static BigNumber operator -(BigNumber a, BigNumber b)
         {
             return Subtract(a, b);
         }
 
-        //умножение
+        // Унарный минус
+        public static BigNumber operator -(BigNumber a)
+        {
+            BigNumber result = a.Clone();
+            if (!result.IsZero) result.isNegative = !result.isNegative;
+            return result;
+        }
+
+
         private static BigNumber Multiply(BigNumber a, int multiplier)
         {
-            BigNumber result = new BigNumber(a.length + 1);
-            int carry = 0;
+            if (multiplier == 0 || a.IsZero) return new BigNumber(0);
 
-            for (int i = 0; i < a.length; i++)
+            // через long, чтобы Math.Abs(int.MinValue) не переполнился
+            long m = Math.Abs((long)multiplier);
+
+            // |multiplier| < 1000^4, поэтому хватит 4 дополнительных разрядов
+            BigNumber result = new BigNumber(a.length + 4);
+            long carry = 0;
+            int i = 0;
+
+            for (; i < a.length; i++)
             {
-                long product = (long)a.digits[i] * multiplier + carry;
+                long product = a.digits[i] * m + carry;
                 result.digits[i] = (int)(product % Base);
-                carry = (int)(product / Base);
+                carry = product / Base;
             }
 
-            result.length = a.length;
-            if (carry > 0)
+            while (carry > 0)
             {
-                result.digits[result.length] = carry;
-                result.length++;
+                result.digits[i] = (int)(carry % Base);
+                carry /= Base;
+                i++;
             }
 
+            result.length = i;
+            result.isNegative = a.isNegative ^ (multiplier < 0);
+            result.Normalize();
             return result;
         }
 
@@ -164,43 +270,29 @@ namespace piogi_lab_2
             return Multiply(a, multiplier);
         }
 
+        public static BigNumber operator *(int multiplier, BigNumber a)
+        {
+            return Multiply(a, multiplier);
+        }
 
-        // Метод для сравнения двух чисел. 
+
         // Возвращает 1, если a > b. -1, если a < b. 0, если они равны.
         public static int Compare(BigNumber a, BigNumber b)
         {
-            if (a.length > b.length) return 1;
-            if (a.length < b.length) return -1;
-
-            for (int i = a.length - 1; i >= 0; i--)
+            if (a.isNegative != b.isNegative)
             {
-                if (a.digits[i] > b.digits[i]) return 1;
-                if (a.digits[i] < b.digits[i]) return -1;
+                return a.isNegative ? -1 : 1;
             }
 
-            return 0;
+            int cmp = CompareAbs(a, b);
+
+            // Для отрицательных: чем больше модуль, тем меньше число
+            return a.isNegative ? -cmp : cmp;
         }
 
         public static bool operator >(BigNumber a, BigNumber b) => Compare(a, b) > 0;
         public static bool operator <(BigNumber a, BigNumber b) => Compare(a, b) < 0;
         public static bool operator >=(BigNumber a, BigNumber b) => Compare(a, b) >= 0;
         public static bool operator <=(BigNumber a, BigNumber b) => Compare(a, b) <= 0;
-     
-    
-
-     // Оператор равенства
-    public static bool operator ==(BigNumber a, BigNumber b)
-        {
-            if (ReferenceEquals(a, b)) return true;
-            if (a is null || b is null) return false;
-            return Compare(a, b) == 0;
-        }
-
-        // Оператор неравенства (нужен, если есть ==)
-        public static bool operator !=(BigNumber a, BigNumber b)
-        {
-            return !(a == b);
-        }
-
     }
 }
