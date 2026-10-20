@@ -25,6 +25,8 @@ namespace piogi_lab_2
         private CEnemyTemplateList enemyList = new CEnemyTemplateList();
         private List<EnemyIcon> enemyIcons = new List<EnemyIcon>();
 
+        private string currentIconsPath = "";
+
 
         // события кнопок
         public MainWindow()
@@ -34,12 +36,15 @@ namespace piogi_lab_2
             LoadIconsBtn.Click += LoadIconsBtn_Click;
             IconsListBox.SelectionChanged += IconsListBox_SelectionChanged;
 
+            LoadIconsFromFolder(".\\Icons");
+
             AddBtn.Click += AddBtn_Click;
             DeleteBtn.Click += DeleteBtn_Click;
             SaveBtn.Click += SaveBtn_Click;
             LoadBtn.Click += LoadBtn_Click;
             EditBtn.Click += EditBtn_Click;
             EnemiesListBox.SelectionChanged += EnemiesListBox_SelectionChanged;
+            StartGameBtn.Click += StartGameBtn_Click;
         }
 
         private void LoadIconsBtn_Click(object sender, RoutedEventArgs e)
@@ -59,6 +64,8 @@ namespace piogi_lab_2
         {
             enemyIcons.Clear();
             IconsListBox.Items.Clear();
+
+            currentIconsPath = path;
 
             string[] files = System.IO.Directory.GetFiles(path, "*.png");
             foreach (string file in files)
@@ -237,5 +244,27 @@ namespace piogi_lab_2
             SpawnChanceBox.Text = enemy.SpawnChance.ToString();
         }
 
-    }
+        // переход к игровому окну
+        private void StartGameBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (enemyList.Count == 0)
+            {
+                MessageBox.Show("Сначала добавьте хотя бы одного противника в редакторе!");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(currentIconsPath))
+            {
+                MessageBox.Show("Сначала загрузите иконки в редакторе (нажмите 'Загрузить иконки')!");
+                return;
+            }
+
+            // Берем сохраненный путь и передаем его в игру
+            var allTemplates = enemyList.GetAllTemplates();
+            GameWindow game = new GameWindow(allTemplates, currentIconsPath);
+            game.Show();
+        }
+     }
 }
+
+

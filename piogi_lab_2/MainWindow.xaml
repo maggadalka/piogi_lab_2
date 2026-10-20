@@ -61,6 +61,9 @@
 
                 <Button x:Name="LoadBtn" Content="Загрузить список" Width="130" Margin="5"/>
             </StackPanel>
+            
+                <Button x:Name="StartGameBtn" Content="Играть" Width="250" Margin="0,60,0,0"/>
+            
         </StackPanel>
 
         <!-- правая колонка: иконки -->

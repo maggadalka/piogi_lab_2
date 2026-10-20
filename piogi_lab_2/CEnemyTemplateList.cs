@@ -82,6 +82,12 @@ namespace piogi_lab_2
             enemies.Add(new CEnemyTemplate(newName, iconName, baseLife, lifeModifier,
                                             baseGold, goldModifier, spawnChance));
         }
+
+        // Метод, который возвращает список всех шаблонов для игры
+        public List<CEnemyTemplate> GetAllTemplates()
+        {
+            return new List<CEnemyTemplate>(enemies);
+        }
     }
 
 }

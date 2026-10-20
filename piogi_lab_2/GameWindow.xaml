@@ -1,0 +1,49 @@
+﻿<Window x:Class="piogi_lab_2.GameWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:piogi_lab_2"
+        mc:Ignorable="d"
+        Title="GameWindow" Height="600" Width="800">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Панель с золотом и уроном -->
+            <RowDefinition Height="*"/>
+            <!-- Противник -->
+            <RowDefinition Height="Auto"/>
+            <!-- Магазин -->
+        </Grid.RowDefinitions>
+
+        <!-- Золото и Урон -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <TextBlock Text="💰 Золото: " Foreground="Gold" FontSize="24" FontWeight="Bold"/>
+            <TextBlock x:Name="GoldText" Text="0" Foreground="Gold" FontSize="24" FontWeight="Bold" Margin="0,0,30,0"/>
+
+            <TextBlock Text="⚔️ Урон: " Foreground="#FF66B2FF" FontSize="24" FontWeight="Bold"/>
+            <TextBlock x:Name="DamageText" Text="1" Foreground="#FF66B2FF" FontSize="24" FontWeight="Bold"/>
+        </StackPanel>
+
+        <!-- Противник -->
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock x:Name="EnemyNameText" Text="Имя врага" Foreground="White" FontSize="20" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+            <!-- Картинка врага -->
+            <Border BorderBrush="Red" BorderThickness="2" CornerRadius="10" Padding="5" Background="#33FFFFFF">
+                <Image x:Name="EnemyImage" Width="200" Height="200" MouseLeftButtonDown="EnemyImage_MouseLeftButtonDown" Cursor="Hand"/>
+            </Border>
+
+            <!-- Шкала здоровья -->
+            <ProgressBar x:Name="HealthBar" Height="25" Width="300" Margin="0,15,0,5" Foreground="Red" Background="#FF444444" BorderThickness="0"/>
+            <TextBlock x:Name="HealthText" Text="100 / 100" Foreground="White" HorizontalAlignment="Center" FontSize="14"/>
+        </StackPanel>
+
+        <!-- Магазин (Улучшение урона) -->
+        <StackPanel Grid.Row="2" HorizontalAlignment="Center" Margin="0,20,0,0">
+            <Button x:Name="UpgradeBtn" Content="Улучшить урон (Цена: 10)" 
+                    Width="250" Height="40" FontSize="16" FontWeight="Bold"
+                    Background="#FF4CAF50" Foreground="White" BorderThickness="0"/>
+        </StackPanel>
+    </Grid>
+</Window>
