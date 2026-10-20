@@ -31,8 +31,8 @@ namespace piogi_lab_2
         {
             if (Gold >= cost)
             {
-                Gold = Gold - cost; 
-                Damage = Damage + new BigNumber(1); 
+                Gold = Gold - cost;
+                Damage = Damage * 2;
                 return true; 
             }
 

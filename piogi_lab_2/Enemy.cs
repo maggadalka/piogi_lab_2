@@ -14,14 +14,29 @@ namespace piogi_lab_2
         public BigNumber CurrentHealth { get; private set; }
         public BigNumber RewardGold { get; private set; }
 
-        public Enemy(CEnemyTemplate template)
+        public Enemy(CEnemyTemplate template, int wave)
         {
             Name = template.Name;
 
-            MaxHealth = new BigNumber(template.BaseLife);
-            RewardGold = new BigNumber(template.BaseGold);
+            // Базовое здоровье из редактора
+            long baseHealth = template.BaseLife;
 
-            CurrentHealth = new BigNumber(template.BaseLife);
+            // Прирост: за каждую волну добавляем 20% от БАЗОВОГО здоровья
+            // (если база 100, то на 3-й волне будет 100 + 20 + 20 = 140)
+            long healthBonus = (long)(baseHealth * 0.2 * (wave - 1));
+
+            long finalHealth = baseHealth + healthBonus;
+            if (finalHealth < 1) finalHealth = 1; // Защита, чтобы враг не был с 0 хп
+
+            MaxHealth = new BigNumber(finalHealth);
+            CurrentHealth = new BigNumber(finalHealth);
+
+            // То же самое для золота
+            long baseGold = template.BaseGold;
+            long goldBonus = (long)(baseGold * 0.3 * (wave - 1)); // Золото растет на 30% от базы
+            long finalGold = baseGold + goldBonus;
+
+            RewardGold = new BigNumber(finalGold);
         }
 
         public void TakeDamage(BigNumber damage)
@@ -36,7 +51,9 @@ namespace piogi_lab_2
 
         public bool IsDead()
         {
-            return CurrentHealth == new BigNumber(0) || CurrentHealth < new BigNumber(0);
+            BigNumber zero = new BigNumber(0);
+
+            return CurrentHealth <= zero;
         }
     }
 
