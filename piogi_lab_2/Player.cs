@@ -8,36 +8,51 @@ namespace piogi_lab_2
 {
     public class Player
     {
-        // ИНКАПСУЛЯЦИЯ: Снаружи можно только ЧИТАТЬ (get), 
-        // но нельзя изменить (private set). Изменить можно только через методы ниже.
+        // Все данные скрыты (private set) — инкапсуляция.
+        public int Lvl { get; private set; }
         public BigNumber Gold { get; private set; }
         public BigNumber Damage { get; private set; }
+        public BigNumber UpgradeCost { get; private set; }
 
-        // Конструктор: задаем начальные значения
+        // Модификаторы
+        public double DamageModifier { get; private set; }
+        public double UpgradeModifier { get; private set; }
+
         public Player()
         {
+            Lvl = 1;
             Gold = new BigNumber(0);
-            Damage = new BigNumber(1);
+            Damage = new BigNumber(1); // Базовый урон
+            UpgradeCost = new BigNumber(10); // Стартовая цена улучшения
+
+            DamageModifier = 1.2; // Урон растет на 20% за уровень
+            UpgradeModifier = 1.5; // Цена растет в 1.5 раза
         }
 
-        // Метод для получения золота
+        // Получение золота
         public void AddGold(BigNumber amount)
         {
             Gold = Gold + amount;
         }
 
-        // Метод покупки улучшения
-        public bool TryUpgrade(BigNumber cost)
+        // Попытка улучшения
+        public bool TryUpgrade()
         {
-            if (Gold >= cost)
+            if (Gold >= UpgradeCost)
             {
-                Gold = Gold - cost;
+                Gold = Gold - UpgradeCost; 
+                Lvl++; 
+
                 Damage = Damage * 2;
-                return true; 
+
+                UpgradeCost = UpgradeCost * 2;
+
+                return true;
             }
 
             return false; 
         }
+
     }
 
 

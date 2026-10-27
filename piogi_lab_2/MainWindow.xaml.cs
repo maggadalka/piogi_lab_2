@@ -62,6 +62,12 @@ namespace piogi_lab_2
         // метод загрузки иконок
         private void LoadIconsFromFolder(string path)
         {
+            if (!System.IO.Directory.Exists(path))
+            {
+                MessageBox.Show("Папка не найдена! Выберите другую папку с иконками.");
+                return;
+            }
+
             enemyIcons.Clear();
             IconsListBox.Items.Clear();
 
@@ -87,6 +93,7 @@ namespace piogi_lab_2
                 IconsListBox.Items.Add(image);
             }
         }
+
 
         // обработчик выбора иконки
         private void IconsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

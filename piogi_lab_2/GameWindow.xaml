@@ -42,8 +42,7 @@
         <!-- Магазин (Улучшение урона) -->
         <StackPanel Grid.Row="2" HorizontalAlignment="Center" Margin="0,20,0,0">
             <Button x:Name="UpgradeBtn" Content="Улучшить урон (Цена: 10)" 
-                    Width="250" Height="40" FontSize="16" FontWeight="Bold"
-                    Background="#FF4CAF50" Foreground="White" BorderThickness="0"/>
+                    Width="250" Height="40" FontSize="16" FontWeight="Bold"/>
         </StackPanel>
     </Grid>
 </Window>

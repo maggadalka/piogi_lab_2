@@ -62,7 +62,7 @@ namespace piogi_lab_2
 
         public void LoadFromJson(string path)
         {
-            if (!File.Exists(path)) return; // защита от ошибки на первом запуске
+            if (!File.Exists(path)) return; 
             string json = File.ReadAllText(path);
             enemies = JsonSerializer.Deserialize<List<CEnemyTemplate>>(json) ?? new List<CEnemyTemplate>();
         }
@@ -71,19 +71,15 @@ namespace piogi_lab_2
                         int baseLife, double lifeModifier,
                         int baseGold, double goldModifier, double spawnChance)
         {
-            // Находим старого противника по имени
             var oldEnemy = GetEnemyByName(oldName);
             if (oldEnemy == null) return;
 
-            // Удаляем его из списка
             enemies.Remove(oldEnemy);
 
-            // Добавляем нового с обновлёнными данными
             enemies.Add(new CEnemyTemplate(newName, iconName, baseLife, lifeModifier,
                                             baseGold, goldModifier, spawnChance));
         }
 
-        // Метод, который возвращает список всех шаблонов для игры
         public List<CEnemyTemplate> GetAllTemplates()
         {
             return new List<CEnemyTemplate>(enemies);

@@ -41,14 +41,13 @@ namespace piogi_lab_2
                 return;
             }
 
-            // Считаем общую сумму шансов (игнорируем нулевые и отрицательные)
+            // Считаем общую сумму шансов 
             double totalChance = 0;
             foreach (var t in templates)
             {
                 if (t.SpawnChance > 0) totalChance += t.SpawnChance;
             }
 
-            // Если у всех врагов шанс 0 (или пусто), выбираем случайного
             if (totalChance <= 0)
             {
                 CEnemyTemplate fallback = templates[rnd.Next(templates.Count)];
@@ -60,12 +59,11 @@ namespace piogi_lab_2
             //  Выбираем случайное число от 0 до общей суммы
             double randomValue = rnd.NextDouble() * totalChance;
             double currentSum = 0;
-            CEnemyTemplate selectedTemplate = templates[0]; // По умолчанию первый
+            CEnemyTemplate selectedTemplate = templates[0];
 
-            // Ищем, в какой промежуток попало наше случайное число
             foreach (var template in templates)
             {
-                if (template.SpawnChance <= 0) continue; // Пропускаем нулевые
+                if (template.SpawnChance <= 0) continue; 
 
                 currentSum += template.SpawnChance;
                 if (randomValue <= currentSum)
@@ -80,7 +78,6 @@ namespace piogi_lab_2
             UpdateEnemyVisuals(selectedTemplate);
         }
 
-        // Вынес обновление визуала в отдельный метод, чтобы не дублировать код
         private void UpdateEnemyVisuals(CEnemyTemplate template)
         {
             EnemyNameText.Text = currentEnemy.Name;
@@ -95,7 +92,7 @@ namespace piogi_lab_2
             }
             catch
             {
-                EnemyImage.Source = null; // Если картинки нет, не падаем
+                EnemyImage.Source = null; 
             }
         }
 
@@ -109,13 +106,10 @@ namespace piogi_lab_2
                 return;
             }
 
-            // Запоминаем здоровье ДО удара
             string healthBefore = currentEnemy.CurrentHealth.ToString();
 
-            // Наносим урон
             currentEnemy.TakeDamage(player.Damage);
 
-            // Запоминаем здоровье ПОСЛЕ удара
             string healthAfter = currentEnemy.CurrentHealth.ToString();
 
             if (currentEnemy.IsDead())
@@ -129,15 +123,11 @@ namespace piogi_lab_2
         }
 
 
-        // ПОКУПКА УЛУЧШЕНИЯ
+        // покупка улучгения
         private void UpgradeBtn_Click(object sender, RoutedEventArgs e)
         {
-            // Цена улучшения = текущий урон * 10 (например, чтобы росла экспоненциально)
-            BigNumber upgradeCost = player.Damage * 10;
-
-            if (player.TryUpgrade(upgradeCost))
+            if (player.TryUpgrade())
             {
-                // Если купили, обновляем интерфейс
                 UpdateUI();
             }
             else
@@ -146,7 +136,8 @@ namespace piogi_lab_2
             }
         }
 
-        // ОБНОВЛЕНИЕ ЦИФР НА ЭКРАНЕ
+
+        // обновление интерфейса
         private void UpdateUI()
         {
             GoldText.Text = player.Gold.ToString();
@@ -154,22 +145,18 @@ namespace piogi_lab_2
 
             if (currentEnemy != null)
             {
-                // Показываем точные цифры (даже если там миллиарды)
                 HealthText.Text = $"{currentEnemy.CurrentHealth} / {currentEnemy.MaxHealth}";
 
-                // Настраиваем шкалу так, чтобы она всегда была от 0 до 100 (проценты)
                 HealthBar.Minimum = 0;
                 HealthBar.Maximum = 100;
 
                 try
                 {
-                    // Переводим наши BigNumber в обычные дробные числа для расчета процентов
                     if (double.TryParse(currentEnemy.CurrentHealth.ToString(), out double currentHP) &&
                         double.TryParse(currentEnemy.MaxHealth.ToString(), out double maxHP))
                     {
                         if (maxHP > 0)
                         {
-                            // Высчитываем процент оставшегося здоровья
                             double percent = (currentHP / maxHP) * 100;
                             HealthBar.Value = percent;
                         }
@@ -177,11 +164,10 @@ namespace piogi_lab_2
                 }
                 catch
                 {
-                    HealthBar.Value = 0; // Если что-то пошло не так, просто обнуляем шкалу
+                    HealthBar.Value = 0; 
                 }
             }
 
-            // Обновляем текст на кнопке улучшения
             BigNumber nextCost = player.Damage * 10;
             UpgradeBtn.Content = $"Улучшить урон (Цена: {nextCost})";
         }

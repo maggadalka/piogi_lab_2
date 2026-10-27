@@ -1,0 +1,74 @@
+[
+  {
+    "Name": "\u043F\u0440\u043E\u0441\u0442\u043E\u0439 \u0433\u043E\u0431\u043B\u0438\u043D",
+    "IconName": "goblin_1.png",
+    "BaseLife": 20,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  },
+  {
+    "Name": "\u043F\u0440\u043E\u0441\u0442\u043E\u0439 \u0433\u043E\u0431\u043B\u0438\u043D",
+    "IconName": "goblin_1.png",
+    "BaseLife": 20,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  },
+  {
+    "Name": "\u043F\u0440\u043E\u0441\u0442\u043E\u0439 \u0433\u043E\u0431\u043B\u0438\u043D",
+    "IconName": "goblin_1.png",
+    "BaseLife": 20,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  },
+  {
+    "Name": "\u043F\u0440\u043E\u0441\u0442\u043E\u0439 \u0433\u043E\u0431\u043B\u0438\u043D",
+    "IconName": "goblin_1.png",
+    "BaseLife": 20,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  },
+  {
+    "Name": "\u0441\u043A\u0435\u043B\u0435\u0442\u043E\u043D \u0432 \u0431\u0440\u043E\u043D\u0435",
+    "IconName": "skeleton_2.png",
+    "BaseLife": 35,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  },
+  {
+    "Name": "\u0441\u043A\u0435\u043B\u0435\u0442\u043E\u043D \u0432 \u0431\u0440\u043E\u043D\u0435",
+    "IconName": "skeleton_2.png",
+    "BaseLife": 35,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  },
+  {
+    "Name": "\u0441\u043A\u0435\u043B\u0435\u0442\u043E\u043D \u0432 \u0431\u0440\u043E\u043D\u0435",
+    "IconName": "skeleton_2.png",
+    "BaseLife": 35,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  },
+  {
+    "Name": "\u0441\u043A\u0435\u043B\u0435\u0442\u043E\u043D \u0432 \u0431\u0440\u043E\u043D\u0435",
+    "IconName": "skeleton_2.png",
+    "BaseLife": 35,
+    "LifeModifier": 1.5,
+    "BaseGold": 20,
+    "GoldModifier": 1.5,
+    "SpawnChance": 0.40000000000000002
+  }
+]
