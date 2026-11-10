@@ -91,6 +91,7 @@
     <Compile Include="CCollectable.cs" />
     <Compile Include="CController.cs" />
     <Compile Include="CCooldownBoost.cs" />
+    <Compile Include="CCooldownSphere.cs" />
     <Compile Include="CCooldownTimer.cs" />
     <Compile Include="CDamageBoost.cs" />
     <Compile Include="CDamageSphere.cs" />
