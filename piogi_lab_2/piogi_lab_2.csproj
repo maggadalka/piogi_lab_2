@@ -89,6 +89,7 @@
     </ApplicationDefinition>
     <Compile Include="CActiveBonus.cs" />
     <Compile Include="CCooldownTimer.cs" />
+    <Compile Include="CDamageBoost.cs" />
     <Compile Include="GameWindow.xaml.cs">
       <DependentUpon>GameWindow.xaml</DependentUpon>
     </Compile>
