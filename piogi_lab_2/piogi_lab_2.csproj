@@ -93,6 +93,7 @@
     <Compile Include="CCooldownBoost.cs" />
     <Compile Include="CCooldownTimer.cs" />
     <Compile Include="CDamageBoost.cs" />
+    <Compile Include="CDamageSphere.cs" />
     <Compile Include="GameWindow.xaml.cs">
       <DependentUpon>GameWindow.xaml</DependentUpon>
     </Compile>
