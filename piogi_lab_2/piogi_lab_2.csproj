@@ -88,6 +88,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CActiveBonus.cs" />
+    <Compile Include="CCollectable.cs" />
     <Compile Include="CController.cs" />
     <Compile Include="CCooldownBoost.cs" />
     <Compile Include="CCooldownTimer.cs" />
