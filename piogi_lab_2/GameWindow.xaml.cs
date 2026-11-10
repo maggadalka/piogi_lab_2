@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -17,9 +18,12 @@ namespace piogi_lab_2
         private int currentWave = 1;
         private Random rnd = new Random();
 
-        // Таймер для перезарядки (и позже для бонусов)
+        // Таймер для перезарядки, сфер и бонусов
         private DispatcherTimer timer;
         private const double TickSeconds = 0.1;
+
+        // Контроллер бонусных сфер и активных бонусов
+        private CController sphereController;
 
         public GameWindow(List<CEnemyTemplate> loadedTemplates, string iconsPath)
         {
@@ -33,6 +37,20 @@ namespace piogi_lab_2
             UpgradeBtn.Click += UpgradeBtn_Click;
             CooldownUpgradeBtn.Click += CooldownUpgradeBtn_Click;
 
+            // Сфера "мгновенное золото" даёт столько же золота, сколько текущий враг
+            sphereController = new CController(
+                2.5,
+                new Size(SphereLayer.ActualWidth, SphereLayer.ActualHeight),
+                () => currentEnemy != null ? currentEnemy.RewardGold : new BigNumber(1));
+
+            // сферы сами рисуются/убираются со слоя
+            sphereController.ObjectSpawned += obj => SphereLayer.Children.Add(obj.getSprite());
+            sphereController.ObjectRemoved += obj => SphereLayer.Children.Remove(obj.getSprite());
+
+            // размер слоя известен только после отрисовки и может меняться
+            SphereLayer.SizeChanged += (s, e) =>
+                sphereController.setSceneSize(new Size(SphereLayer.ActualWidth, SphereLayer.ActualHeight));
+
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(TickSeconds);
             timer.Tick += Timer_Tick;
@@ -44,11 +62,22 @@ namespace piogi_lab_2
             UpdateUI();
         }
 
-        // тик таймера: обновляем перезарядку
+        // тик таймера: перезарядка, сферы, активные бонусы
         private void Timer_Tick(object sender, EventArgs e)
         {
             player.update(TickSeconds);
+            sphereController.update(TickSeconds, player);
             UpdateTimedUI();
+        }
+
+        // клик по слою со сферами
+        private void SphereLayer_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sphereController.handleClick(player, e.GetPosition(SphereLayer)))
+            {
+                // сфера могла поменять золото или урон
+                UpdateUI();
+            }
         }
 
         private void SpawnNewEnemy()
@@ -188,6 +217,17 @@ namespace piogi_lab_2
         {
             CooldownBar.Value = player.Cooldown.Progress;
             CooldownText.Text = $"Перезарядка: {player.Cooldown.Duration:0.00} с";
+
+            // список активных бонусов с оставшимся временем
+            StringBuilder sb = new StringBuilder();
+            foreach (CActiveBonus bonus in sphereController.ActiveBonuses)
+            {
+                sb.AppendLine($"{bonus.Name} ({bonus.TimeLeft:0.0} с)");
+            }
+            BonusesText.Text = sb.ToString().TrimEnd();
+
+            // урон мог измениться из-за бонуса
+            DamageText.Text = player.EffectiveDamage.ToString();
         }
 
 
