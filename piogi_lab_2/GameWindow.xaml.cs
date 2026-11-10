@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace piogi_lab_2
 {
@@ -11,10 +12,14 @@ namespace piogi_lab_2
     {
         private Player player;
         private Enemy currentEnemy;
-        private List<CEnemyTemplate> templates; 
+        private List<CEnemyTemplate> templates;
         private string iconsFolderPath;
         private int currentWave = 1;
         private Random rnd = new Random();
+
+        // Таймер для перезарядки (и позже для бонусов)
+        private DispatcherTimer timer;
+        private const double TickSeconds = 0.1;
 
         public GameWindow(List<CEnemyTemplate> loadedTemplates, string iconsPath)
         {
@@ -26,10 +31,24 @@ namespace piogi_lab_2
             player = new Player();
 
             UpgradeBtn.Click += UpgradeBtn_Click;
+            CooldownUpgradeBtn.Click += CooldownUpgradeBtn_Click;
+
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(TickSeconds);
+            timer.Tick += Timer_Tick;
+            timer.Start();
+            Closed += (s, e) => timer.Stop();
 
             SpawnNewEnemy();
 
             UpdateUI();
+        }
+
+        // тик таймера: обновляем перезарядку
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            player.update(TickSeconds);
+            UpdateTimedUI();
         }
 
         private void SpawnNewEnemy()
@@ -41,7 +60,7 @@ namespace piogi_lab_2
                 return;
             }
 
-            // Считаем общую сумму шансов 
+            // Считаем общую сумму шансов
             double totalChance = 0;
             foreach (var t in templates)
             {
@@ -63,7 +82,7 @@ namespace piogi_lab_2
 
             foreach (var template in templates)
             {
-                if (template.SpawnChance <= 0) continue; 
+                if (template.SpawnChance <= 0) continue;
 
                 currentSum += template.SpawnChance;
                 if (randomValue <= currentSum)
@@ -81,7 +100,7 @@ namespace piogi_lab_2
         private void UpdateEnemyVisuals(CEnemyTemplate template)
         {
             EnemyNameText.Text = currentEnemy.Name;
-            
+
             try
             {
                 if (!string.IsNullOrEmpty(iconsFolderPath))
@@ -92,7 +111,7 @@ namespace piogi_lab_2
             }
             catch
             {
-                EnemyImage.Source = null; 
+                EnemyImage.Source = null;
             }
         }
 
@@ -106,9 +125,17 @@ namespace piogi_lab_2
                 return;
             }
 
+            // перезарядка ещё идёт — клик игнорируется
+            if (!player.Cooldown.IsReady)
+                return;
+
             string healthBefore = currentEnemy.CurrentHealth.ToString();
 
-            currentEnemy.TakeDamage(player.Damage);
+            // урон с учётом активных бонусов
+            currentEnemy.TakeDamage(player.EffectiveDamage);
+
+            // после удара запускаем перезарядку заново
+            player.Cooldown.Reset();
 
             string healthAfter = currentEnemy.CurrentHealth.ToString();
 
@@ -136,12 +163,39 @@ namespace piogi_lab_2
             }
         }
 
+        // покупка улучшения перезарядки
+        private void CooldownUpgradeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (!player.Cooldown.CanReduce)
+            {
+                MessageBox.Show("Перезарядка уже минимальна!");
+                return;
+            }
+
+            if (player.TryUpgradeCooldown())
+            {
+                UpdateUI();
+            }
+            else
+            {
+                MessageBox.Show("Недостаточно золота!");
+            }
+        }
+
+
+        // то, что меняется каждый тик таймера
+        private void UpdateTimedUI()
+        {
+            CooldownBar.Value = player.Cooldown.Progress;
+            CooldownText.Text = $"Перезарядка: {player.Cooldown.Duration:0.00} с";
+        }
+
 
         // обновление интерфейса
         private void UpdateUI()
         {
             GoldText.Text = player.Gold.ToString();
-            DamageText.Text = player.Damage.ToString();
+            DamageText.Text = player.EffectiveDamage.ToString();
 
             if (currentEnemy != null)
             {
@@ -164,12 +218,19 @@ namespace piogi_lab_2
                 }
                 catch
                 {
-                    HealthBar.Value = 0; 
+                    HealthBar.Value = 0;
                 }
             }
 
             BigNumber nextCost = player.Damage * 10;
             UpgradeBtn.Content = $"Улучшить урон (Цена: {nextCost})";
+
+            if (player.Cooldown.CanReduce)
+                CooldownUpgradeBtn.Content = $"Быстрее клики (Цена: {player.CooldownUpgradeCost})";
+            else
+                CooldownUpgradeBtn.Content = "Перезарядка минимальна";
+
+            UpdateTimedUI();
         }
 
     }

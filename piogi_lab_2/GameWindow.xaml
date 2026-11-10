@@ -37,11 +37,18 @@
             <!-- Шкала здоровья -->
             <ProgressBar x:Name="HealthBar" Height="25" Width="300" Margin="0,15,0,5" Foreground="Red" Background="#FF444444" BorderThickness="0"/>
             <TextBlock x:Name="HealthText" Text="100 / 100" Foreground="White" HorizontalAlignment="Center" FontSize="14"/>
+
+            <!-- Перезарядка между кликами -->
+            <ProgressBar x:Name="CooldownBar" Height="10" Width="300" Margin="0,10,0,0" Minimum="0" Maximum="1"
+                         Foreground="DodgerBlue" Background="#FF444444" BorderThickness="0"/>
+            <TextBlock x:Name="CooldownText" Text="Перезарядка" Foreground="#FFAAAAAA" HorizontalAlignment="Center" FontSize="12"/>
         </StackPanel>
 
-        <!-- Магазин (Улучшение урона) -->
-        <StackPanel Grid.Row="2" HorizontalAlignment="Center" Margin="0,20,0,0">
-            <Button x:Name="UpgradeBtn" Content="Улучшить урон (Цена: 10)" 
+        <!-- Магазин (Улучшение урона и перезарядки) -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+            <Button x:Name="UpgradeBtn" Content="Улучшить урон (Цена: 10)"
+                    Width="250" Height="40" FontSize="16" FontWeight="Bold" Margin="0,0,10,0"/>
+            <Button x:Name="CooldownUpgradeBtn" Content="Быстрее клики (Цена: 20)"
                     Width="250" Height="40" FontSize="16" FontWeight="Bold"/>
         </StackPanel>
     </Grid>
