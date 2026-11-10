@@ -18,6 +18,19 @@ namespace piogi_lab_2
         public double DamageModifier { get; private set; }
         public double UpgradeModifier { get; private set; }
 
+        // Перезарядка между кликами по врагу
+        public CCooldownTimer Cooldown { get; private set; }
+        public BigNumber CooldownUpgradeCost { get; private set; }
+
+        // Временный множитель урона от бонусных сфер (1 = бонуса нет)
+        public int DamageMultiplier { get; private set; }
+
+        // Урон с учётом активных бонусов — именно он наносится врагу
+        public BigNumber EffectiveDamage
+        {
+            get { return Damage * DamageMultiplier; }
+        }
+
         public Player()
         {
             Lvl = 1;
@@ -27,6 +40,16 @@ namespace piogi_lab_2
 
             DamageModifier = 1.2; // Урон растет на 20% за уровень
             UpgradeModifier = 1.5; // Цена растет в 1.5 раза
+
+            Cooldown = new CCooldownTimer(0.5);          // 0.5 сек между кликами
+            CooldownUpgradeCost = new BigNumber(20);
+            DamageMultiplier = 1;
+        }
+
+        // Обновление времени (вызывается из таймера окна)
+        public void update(double dt)
+        {
+            Cooldown.Update(dt);
         }
 
         // Получение золота
@@ -40,8 +63,8 @@ namespace piogi_lab_2
         {
             if (Gold >= UpgradeCost)
             {
-                Gold = Gold - UpgradeCost; 
-                Lvl++; 
+                Gold = Gold - UpgradeCost;
+                Lvl++;
 
                 Damage = Damage * 2;
 
@@ -50,7 +73,35 @@ namespace piogi_lab_2
                 return true;
             }
 
-            return false; 
+            return false;
+        }
+
+        // Попытка улучшить перезарядку за золото (по той же схеме, что TryUpgrade)
+        public bool TryUpgradeCooldown()
+        {
+            if (!Cooldown.CanReduce)
+                return false;
+
+            if (Gold >= CooldownUpgradeCost)
+            {
+                Gold = Gold - CooldownUpgradeCost;
+                Cooldown.Reduce(0.05);
+                CooldownUpgradeCost = CooldownUpgradeCost * 2;
+                return true;
+            }
+
+            return false;
+        }
+
+        // Временные множители урона (включаются/выключаются бонусами)
+        public void AddDamageMultiplier(int m)
+        {
+            DamageMultiplier *= m;
+        }
+
+        public void RemoveDamageMultiplier(int m)
+        {
+            DamageMultiplier /= m;
         }
 
     }
